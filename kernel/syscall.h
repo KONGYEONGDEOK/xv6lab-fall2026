@@ -21,3 +21,6 @@
 #define SYS_mkdir  20
 #define SYS_close  21
 #define SYS_sync   22
+// kernel/syscall.h
+#define SYS_freepages 23
+#define SYS_sysinfo 24
