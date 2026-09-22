@@ -489,3 +489,32 @@ ismapped(pagetable_t pagetable, uint64 va)
   }
   return 0;
 }
+
+// kernel/vm.c  — add at the bottom of the file
+
+// Print the valid PTEs of one page-table page,
+// then descend into lower-level tables.
+// level: 2 = root (L2), 1 = L1, 0 = L0  — same numbering as PX(level, va)
+static void
+vmprint_level(pagetable_t pagetable, int level)
+{
+  for (int i = 0; i < 512; i++) {
+    pte_t pte = pagetable[i];
+
+    if ((pte & PTE_V) == 0)
+      continue;                         // empty slot
+
+    // TODO ①  indent: print " .." once for L2, twice for L1, three times for L0
+
+    printk("%d: pte %p pa %p\n", i, (void *)pte, (void *)PTE2PA(pte));
+
+    // TODO ②  if this PTE points to a lower-level table, descend into it
+  }
+}
+
+void
+vmprint(pagetable_t pagetable)
+{
+  printk("page table %p\n", (void *)pagetable);
+  vmprint_level(pagetable, 2);
+}
